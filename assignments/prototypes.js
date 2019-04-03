@@ -141,3 +141,58 @@ Humanoid.prototype.greet = function() {
   // * Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.  
   // * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
   // * Create two new objects, one a villain and one a hero and fight it out with methods!
+
+function Villain(VilAttributes) {
+  Humanoid.call(this, VilAttributes);
+}
+Villain.prototype = Object.create(Humanoid.prototype);
+
+Villain.prototype.attack = function(damage, recipient) {
+    console.log(`${this.name} has done ${damage} damage to ${recipient}.`)
+}
+
+function Hero (HeroAttributes) {
+  Humanoid.call(this, HeroAttributes);
+}
+Hero.prototype = Object.create(Villain.prototype);
+
+const giant = new Villain ({
+  createdAt: new Date(),
+  dimensions: {
+    length: 2,
+    width: 2,
+    height: 2,
+    },
+  name: 'Final Boss',
+  language: 'Gibberish',
+  weapons: ['Fists',
+    ],
+  team: 'Bad Guys',
+  healthPoints: 10,
+
+});
+
+const dodger = new Hero({
+  createdAt: new Date(),
+  dimensions: {
+    length: 3,
+    width: 3,
+    height: 3,
+    },
+  name: 'Protaganist',
+  language: 'English',
+  weapons: ['Baseball Bat',
+    ],
+  team: 'Good Guys',
+  healthPoints: 10,
+});
+
+console.log(giant.greet());
+console.log(dodger.greet());
+giant.attack(2, dodger.name);
+dodger.attack(2, giant.name);
+giant.attack(2, dodger.name);
+dodger.attack(4, giant.name);
+giant.attack(5, dodger.name);
+dodger.attack(2, giant.name);
+console.log(giant.destroy());
