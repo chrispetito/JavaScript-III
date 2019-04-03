@@ -147,8 +147,14 @@ function Villain(VilAttributes) {
 }
 Villain.prototype = Object.create(Humanoid.prototype);
 
-Villain.prototype.attack = function(damage, recipient) {
-    console.log(`${this.name} has done ${damage} damage to ${recipient}.`)
+Villain.prototype.attack = function(recipient) {
+    return recipient.healthPoints -= 2;
+}
+Villain.prototype.update = function(recipient, number) {
+  console.log(`${recipient} has been attacked and reduced to ${number} health points!`);
+}
+Villain.prototype.dead = function(recipient) {
+  console.log(`${recipient} has been defeated!`)
 }
 
 function Hero (HeroAttributes) {
@@ -189,10 +195,23 @@ const dodger = new Hero({
 
 console.log(giant.greet());
 console.log(dodger.greet());
-giant.attack(2, dodger.name);
-dodger.attack(2, giant.name);
-giant.attack(2, dodger.name);
-dodger.attack(4, giant.name);
-giant.attack(5, dodger.name);
-dodger.attack(2, giant.name);
+dodger.attack(giant);
+dodger.update(giant.name, giant.healthPoints);
+giant.attack(dodger);
+giant.update(dodger.name, dodger.healthPoints);
+dodger.attack(giant);
+dodger.update(giant.name, giant.healthPoints);
+giant.attack(dodger);
+giant.update(dodger.name, dodger.healthPoints);
+dodger.attack(giant);
+dodger.update(giant.name, giant.healthPoints);
+giant.attack(dodger);
+giant.update(dodger.name, dodger.healthPoints);
+dodger.attack(giant);
+dodger.update(giant.name, giant.healthPoints);
+giant.attack(dodger);
+giant.update(dodger.name, dodger.healthPoints);
+dodger.attack(giant);
+dodger.update(giant.name, giant.healthPoints);
+dodger.dead(giant.name);
 console.log(giant.destroy());
