@@ -158,7 +158,7 @@ Villain.prototype.dead = function(recipient) {
 }
 
 function Hero (HeroAttributes) {
-  Humanoid.call(this, HeroAttributes);
+  Villain.call(this, HeroAttributes);
 }
 Hero.prototype = Object.create(Villain.prototype);
 
