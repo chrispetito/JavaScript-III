@@ -15,6 +15,15 @@
   * dimensions (These represent the character's size in the video game)
   * destroy() // prototype method that returns: `${this.name} was removed from the game.`
 */
+function GameObject(attributes) {
+  this.createdAt = attributes.createdAt;
+  this.name= attributes.name;
+  this.dimensions = attributes.dimensions;
+}
+GameObject.prototype.destroy = function() {
+  return `${this.name} was removed from the game.`
+}
+
 
 /*
   === CharacterStats ===
@@ -22,8 +31,19 @@
   * takeDamage() // prototype method -> returns the string '<object name> took damage.'
   * should inherit destroy() from GameObject's prototype
 */
+function CharacterStats(charAttributes) {
+  GameObject.call(this, charAttributes)
+  this.healthPoints = charAttributes.healthPoints;
+}
 
-/*
+CharacterStats.prototype = Object.create(GameObject.prototype);
+
+CharacterStats.prototype.takeDamage = function() {
+  return `${this.name} took damage.`
+}
+
+
+/* 
   === Humanoid (Having an appearance or character resembling that of a human.) ===
   * team
   * weapons
@@ -32,7 +52,20 @@
   * should inherit destroy() from GameObject through CharacterStats
   * should inherit takeDamage() from CharacterStats
 */
- 
+function Humanoid(HumAttributes) {
+  CharacterStats.call(this, HumAttributes);
+  this.team = HumAttributes.team;
+  this.weapons = HumAttributes.weapons;
+  this.language = HumAttributes.language;
+}
+
+Humanoid.prototype = Object.create(CharacterStats.prototype);
+
+Humanoid.prototype.greet = function() {
+  return `${this.name} offers a greeting in ${this.language}.`
+}
+
+
 /*
   * Inheritance chain: GameObject -> CharacterStats -> Humanoid
   * Instances of Humanoid should have all of the same properties as CharacterStats and GameObject.
@@ -41,7 +74,7 @@
 
 // Test you work by un-commenting these 3 objects and the list of console logs below:
 
-/*
+
   const mage = new Humanoid({
     createdAt: new Date(),
     dimensions: {
@@ -102,9 +135,83 @@
   console.log(archer.greet()); // Lilith offers a greeting in Elvish.
   console.log(mage.takeDamage()); // Bruce took damage.
   console.log(swordsman.destroy()); // Sir Mustachio was removed from the game.
-*/
+
 
   // Stretch task: 
   // * Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.  
   // * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
   // * Create two new objects, one a villain and one a hero and fight it out with methods!
+
+function Villain(VilAttributes) {
+  Humanoid.call(this, VilAttributes);
+}
+Villain.prototype = Object.create(Humanoid.prototype);
+
+Villain.prototype.attack = function(recipient) {
+    return recipient.healthPoints -= 2;
+}
+Villain.prototype.update = function(recipient, number) {
+  console.log(`${recipient} has been attacked and reduced to ${number} health points!`);
+}
+Villain.prototype.dead = function(recipient) {
+  console.log(`${recipient} has been defeated!`)
+}
+
+function Hero (HeroAttributes) {
+  Villain.call(this, HeroAttributes);
+}
+Hero.prototype = Object.create(Villain.prototype);
+
+const giant = new Villain ({
+  createdAt: new Date(),
+  dimensions: {
+    length: 2,
+    width: 2,
+    height: 2,
+    },
+  name: 'Final Boss',
+  language: 'Gibberish',
+  weapons: ['Fists',
+    ],
+  team: 'Bad Guys',
+  healthPoints: 10,
+
+});
+
+const dodger = new Hero({
+  createdAt: new Date(),
+  dimensions: {
+    length: 3,
+    width: 3,
+    height: 3,
+    },
+  name: 'Protaganist',
+  language: 'English',
+  weapons: ['Baseball Bat',
+    ],
+  team: 'Good Guys',
+  healthPoints: 10,
+});
+
+console.log(giant.greet());
+console.log(dodger.greet());
+dodger.attack(giant);
+dodger.update(giant.name, giant.healthPoints);
+giant.attack(dodger);
+giant.update(dodger.name, dodger.healthPoints);
+dodger.attack(giant);
+dodger.update(giant.name, giant.healthPoints);
+giant.attack(dodger);
+giant.update(dodger.name, dodger.healthPoints);
+dodger.attack(giant);
+dodger.update(giant.name, giant.healthPoints);
+giant.attack(dodger);
+giant.update(dodger.name, dodger.healthPoints);
+dodger.attack(giant);
+dodger.update(giant.name, giant.healthPoints);
+giant.attack(dodger);
+giant.update(dodger.name, dodger.healthPoints);
+dodger.attack(giant);
+dodger.update(giant.name, giant.healthPoints);
+dodger.dead(giant.name);
+console.log(giant.destroy());
